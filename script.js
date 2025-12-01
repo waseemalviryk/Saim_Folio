@@ -1,50 +1,50 @@
-// Navbar Scroll Effect
-const navbar = document.querySelector('.navbar');
-
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-});
-
-// Smooth Scrolling for Anchor Links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+// Smooth scrolling for navigation links
+document.querySelectorAll('a.nav-link').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
+        const targetId = this.getAttribute('href').substring(1);
+        const targetSection = document.getElementById(targetId);
+        
+        if (targetSection) {
             window.scrollTo({
-                top: target.offsetTop - 70, // Adjust for fixed navbar
+                top: targetSection.offsetTop - 70, // Adjust for fixed navbar
                 behavior: 'smooth'
             });
-
-            // Close mobile menu if open
-            const navbarToggler = document.querySelector('.navbar-toggler');
-            const navbarCollapse = document.querySelector('.navbar-collapse');
-            if (window.getComputedStyle(navbarToggler).display !== 'none' && navbarCollapse.classList.contains('show')) {
-                navbarToggler.click();
-            }
         }
     });
 });
 
-// Simple Reveal Animation on Scroll (Intersection Observer)
-const observerOptions = {
-    threshold: 0.1
-};
+// Active link highlighting on scroll
+const sections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('.nav-link');
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-            observer.unobserve(entry.target);
+window.addEventListener('scroll', () => {
+    let current = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= sectionTop - 150) {
+            current = section.getAttribute('id');
         }
     });
-}, observerOptions);
 
-document.querySelectorAll('section').forEach(section => {
-    section.classList.add('hidden'); // You might want to add this class in CSS for initial state
-    observer.observe(section);
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').includes(current)) {
+            link.classList.add('active');
+        }
+    });
+});
+
+// Navbar background change on scroll
+const navbar = document.querySelector('.navbar');
+window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+        navbar.classList.add('shadow');
+        navbar.style.backgroundColor = 'rgba(18, 18, 18, 0.98)';
+    } else {
+        navbar.classList.remove('shadow');
+        navbar.style.backgroundColor = 'rgba(18, 18, 18, 0.95)';
+    }
 });
